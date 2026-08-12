@@ -183,10 +183,31 @@ h1 {
 
 .story {
   display: grid;
-  grid-template-columns: 1fr 1fr 1.3fr;
+  grid-template-columns: minmax(0, 2fr) minmax(0, 1.3fr);
   gap: clamp(20px, 3vw, 30px);
   padding-top: 26px;
   border-top: 1px solid var(--line-strong);
+}
+
+.story-local {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px clamp(20px, 3vw, 30px);
+}
+
+.story-partners {
+  display: grid;
+  align-content: start;
+  gap: 12px;
+  padding-left: clamp(20px, 3vw, 30px);
+  border-left: 1px solid var(--line-strong);
+}
+
+.story-heading {
+  grid-column: 1 / -1;
+  color: var(--ink);
+  font-weight: 700;
+  line-height: 1.45;
 }
 
 .story-copy {
@@ -301,6 +322,18 @@ h1 {
   .story {
     grid-template-columns: 1fr;
     gap: 16px;
+  }
+
+  .story-local {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .story-partners {
+    padding-top: 16px;
+    padding-left: 0;
+    border-top: 1px solid var(--line-strong);
+    border-left: 0;
   }
 
   .footer-grid {
