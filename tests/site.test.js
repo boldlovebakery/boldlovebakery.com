@@ -5,6 +5,14 @@ import test from "node:test";
 const shopUrl = "https://grownby.com/farms/bold-love-farm-bakery/shop";
 const outputDirectory = new URL("../dist/", import.meta.url);
 const homepage = await readFile(new URL("index.html", outputDirectory), "utf8");
+const homepageText = homepage
+  .replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi, " ")
+  .replace(/<[^>]+>/g, " ")
+  .replace(/&amp;/g, "&")
+  .replace(/&#39;|&apos;/g, "'")
+  .replace(/&quot;/g, '"')
+  .replace(/\s+/g, " ")
+  .trim();
 
 test("the generated homepage has the required document metadata", () => {
   assert.match(homepage, /<!DOCTYPE html>/i);
@@ -23,19 +31,31 @@ test("the generated homepage includes the existing Mailchimp popup loader", () =
   );
 });
 
-test("the generated homepage preserves its critical content", () => {
+test("the generated homepage presents the refreshed critical content", () => {
   const requiredContent = [
-    "Fresh Local Food, Every Week",
-    "Seasonal produce, breads, pastries, and prepared foods",
-    "USDA-certified organic",
-    "The weekly shop brings together what we grow",
+    "Organic fruits and vegetables, prepared foods, sourdough breads, baked goods, and many other products from our local partners",
+    "Looking for local food that's fresher, healthier, and better tasting? We can help. Our produce is certified organic and gets to you shortly after coming out of the ground.",
+    "We bake and cook with the same care, so the food reaches you fresh, local, and full of nutrition.",
+    "Love supporting local businesses? So do we! We carry products from 9 other local farms and producers. Shopping with us helps ensure these small, local businesses remain viable and continue providing clean food for our community.",
     "USDA Certified Organic",
     "Mount Airy, Maryland community",
   ];
 
   for (const content of requiredContent) {
-    assert.ok(homepage.includes(content), `Expected generated homepage to include: ${content}`);
+    assert.ok(homepageText.includes(content), `Expected generated homepage to include: ${content}`);
   }
+
+  const supersededContent = [
+    "Fresh Local Food, Every Week",
+    "Seasonal produce, breads, pastries, and prepared foods grown and made with care, then offered through our online store.",
+    "The weekly shop brings together what we grow, what we bake, what we cook, and what we share from our local partners.",
+  ];
+
+  for (const content of supersededContent) {
+    assert.ok(!homepageText.includes(content), `Expected generated homepage to omit: ${content}`);
+  }
+
+  assert.equal((homepage.match(/<p class="story-copy">/g) || []).length, 3);
 });
 
 test("both shop links use the correct destination and new-tab protections", () => {
