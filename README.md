@@ -1,6 +1,8 @@
 # Bold Love Farm & Bakery website
 
-This repository is the canonical source for the shared website content used by `boldloveBAKERY.com` and `boldloveFARM.com`. The site is built with Astro and published as static files through GitHub Pages.
+This repository is the canonical source for the website published at both [boldlovebakery.com](https://boldlovebakery.com/) and [boldlovefarm.com](https://boldlovefarm.com/). Both production repositories use the same commits; each repository's GitHub Pages settings assign its own custom domain.
+
+The site is built with Astro and published as static files through GitHub Pages.
 
 The page itself uses Astro templates and CSS. It does not use a frontend framework. The only client-side JavaScript is Mailchimp's connected-site loader, which provides the existing signup popup.
 
@@ -23,7 +25,7 @@ Start the local development server:
 npm run dev
 ```
 
-Astro prints the local address to open in a browser. Changes under `src/` are reflected while the server is running.
+Astro prints the local address to open in a browser. Changes under `src/` and `public/` are reflected while the server is running.
 
 ## Build and verification
 
@@ -39,15 +41,16 @@ Build the site and run the focused checks against the generated files:
 npm test
 ```
 
-The checks cover the homepage metadata and content, shop links, local assets, the Mailchimp popup loader, and the generated custom-domain file.
+The checks cover the homepage metadata and content, shop links, local assets, and the Mailchimp popup loader.
 
-To inspect the exact generated files locally, build the site and serve `dist/`:
+To inspect the production build locally:
 
 ```sh
-python3 -m http.server 8000 --directory dist
+npm run build
+npm run preview
 ```
 
-Then open `http://localhost:8000/`.
+Astro prints the preview address to open in a browser.
 
 ### Check the Mailchimp popup
 
@@ -69,31 +72,65 @@ Mailchimp may apply connected-domain and audience rules that prevent the popup f
 
 ## GitHub Pages deployment
 
-The deployment workflow runs when `main` is pushed and can also be started manually from GitHub Actions. It installs from the lockfile, builds the Astro site, uploads `dist/`, and deploys that artifact to GitHub Pages.
+The deployment workflow runs independently in both production repositories whenever `main` is pushed. It can also be started manually from the repository's Actions tab. The workflow installs the locked dependencies, builds the Astro site, uploads `dist/`, and deploys that artifact to GitHub Pages.
 
-In each production repository, configure GitHub Pages to use **GitHub Actions** as its source. The workflow does not hard-code a domain; Astro copies that repository's `public/CNAME` into `dist/CNAME` during the build.
+The source code does not contain a `CNAME` file. With the custom GitHub Actions workflow, each custom domain is repository configuration rather than shared source code.
 
-## Preserve each repository's `CNAME`
+Configure the repositories under **Settings → Pages** as follows:
 
-The two production repositories share site source but own different custom-domain files:
+- `boldlovebakery/boldlovebakery.com`
+  - Source: **GitHub Actions**
+  - Custom domain: `boldlovebakery.com`
+- `boldlovebakery/boldlovefarm.com`
+  - Source: **GitHub Actions**
+  - Custom domain: `boldlovefarm.com`
 
-- Bakery: `public/CNAME` must contain `boldlovebakery.com`
-- Farm: `public/CNAME` must contain the farm repository's own domain
+Do not add a domain-specific `CNAME` file or make domain-specific commits. The two repositories should remain on the same Git history.
 
-Treat `public/CNAME` as destination-owned when synchronizing source between repositories. Before applying shared changes to the farm repository, record its existing `public/CNAME`, exclude that file from the source sync, and confirm it is unchanged before committing or pushing. Apply the same rule in reverse for the bakery repository.
+## Production remotes
 
-Do not copy the bakery `public/CNAME` over the farm value, and do not force-push shared content without first verifying the destination file.
+The local repository has individual remotes for inspection and a combined remote for deployment:
 
-After syncing either repository, run:
+- `boldloveBAKERY.com-production` → `https://github.com/boldlovebakery/boldlovebakery.com.git`
+- `boldloveFARM.com-production` → `https://github.com/boldlovebakery/boldlovefarm.com.git`
+- `both-production` → pushes to both repositories
+
+This working copy is already configured with `both-production`. When setting up another clone, create the combined remote with:
+
+```sh
+git remote add both-production https://github.com/boldlovebakery/boldlovebakery.com.git
+git remote set-url --add --push both-production https://github.com/boldlovebakery/boldlovebakery.com.git
+git remote set-url --add --push both-production https://github.com/boldlovebakery/boldlovefarm.com.git
+```
+
+Confirm the fetch and push URLs with:
+
+```sh
+git remote -v
+```
+
+## Deploying both sites
+
+Before deploying, verify the site locally:
 
 ```sh
 npm ci
 npm test
 ```
 
-The custom-domain test confirms that the generated value exactly matches the `public/CNAME` belonging to the repository being built.
+Then push the same `main` commit to both production repositories:
 
-## Production remotes
+```sh
+git push both-production main
+```
 
-- `boldloveBAKERY.com-production` → `https://github.com/boldlovebakery/boldlovebakery.com.git`
-- `boldloveFARM.com-production` → `https://github.com/boldlovebakery/boldlovefarm.com.git`
+That single command triggers the same Pages workflow in both repositories. Check the Actions tab in each repository and confirm both **Deploy to GitHub Pages** runs succeed.
+
+Avoid force-pushing either production repository. If one push fails, inspect the commits present on only one side before integrating them. For example:
+
+```sh
+git fetch boldloveFARM.com-production
+git log --left-right --graph --oneline main...boldloveFARM.com-production/main
+```
+
+After resolving the divergence with a normal merge or rebase, push `main` through `both-production` again.

@@ -82,9 +82,3 @@ test("all required local assets are included in the generated site", async () =>
   const stylesheet = await readFile(new URL(stylesheetPath.slice(1), outputDirectory), "utf8");
   assert.ok(stylesheet.includes("/farm-background.png"));
 });
-
-test("the custom domain is copied exactly", async () => {
-  const sourceDomain = await readFile(new URL("../public/CNAME", import.meta.url), "utf8");
-  const customDomain = await readFile(new URL("CNAME", outputDirectory), "utf8");
-  assert.equal(customDomain, sourceDomain);
-});
