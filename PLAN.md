@@ -1,5 +1,7 @@
 # Rework the landing page into a store-focused homepage
 
+> Historical plan: this completed plan describes the former root-HTML implementation. The site is now authored in Astro; use `README.md` for current file locations, commands, and deployment instructions.
+
 This ExecPlan is a living document. The sections `Progress`, `Surprises & Discoveries`, `Decision Log`, and `Outcomes & Retrospective` must be kept up to date as work proceeds.
 
 ## Purpose / Big Picture

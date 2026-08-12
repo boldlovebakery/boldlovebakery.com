@@ -1,46 +1,93 @@
-# boldlovebakery.com
+# Bold Love Farm & Bakery website
 
-This repository is the canonical source for the shared Bold Love website content used for both `boldloveBAKERY.com` and `boldloveFARM.com`.
+This repository is the canonical source for the shared website content used by `boldloveBAKERY.com` and `boldloveFARM.com`. The site is built with Astro and published as static files through GitHub Pages.
 
-The working assumption is:
+The page itself uses Astro templates and CSS. It does not use a frontend framework or ship client-side JavaScript.
 
-- This repo is where the site content is edited first.
-- `boldloveBAKERY.com` is deployed from the `boldloveBAKERY.com-production` remote.
-- `boldloveFARM.com` is deployed from the `boldloveFARM.com-production` remote.
+## Requirements
 
-## Canonical Content
+- Node.js 22.12 or newer
+- npm, included with Node.js
 
-The HTML, images, favicon, and other shared site assets are maintained here and may be pushed to either production repository when the two sites should show the same content.
+## Local development
 
-## Important: Preserve Each Repo's `CNAME`
+Install the exact dependencies recorded in `package-lock.json`:
 
-GitHub Pages uses the `CNAME` file in each repository to decide which custom domain that repository serves.
+```sh
+npm ci
+```
 
-In this repository, the checked-in `CNAME` is:
+Start the local development server:
 
-    boldlovebakery.com
+```sh
+npm run dev
+```
 
-That is correct for the bakery repository, but it must not be blindly copied into the farm repository if the farm repository has its own domain-specific `CNAME`.
+Astro prints the local address to open in a browser. Changes under `src/` are reflected while the server is running.
 
-When pushing this shared site to `boldloveFARM.com`, preserve the farm repository's own `CNAME` file so GitHub Pages continues serving the farm domain correctly. Likewise, when pushing to `boldloveBAKERY.com`, preserve the bakery repository's `CNAME`.
+## Build and verification
 
-In practice, this means:
+Create the production site in `dist/`:
 
-- Do not assume the two repositories should have identical `CNAME` contents.
-- Do not force-push one repository over the other without checking the destination repository's `CNAME`.
-- If you sync content between the two repositories, handle `CNAME` as a repository-specific file rather than shared content.
+```sh
+npm run build
+```
 
-## Remotes
+Build the site and run the focused checks against the generated files:
 
-This repository currently uses:
+```sh
+npm test
+```
 
-- `boldloveBAKERY.com-production` -> `https://github.com/boldlovebakery/boldlovebakery.com.git`
-- `boldloveFARM.com-production` -> `https://github.com/boldlovebakery/boldlovefarm.com.git`
+The checks cover the homepage metadata and content, shop links, local assets, absence of client-side scripts, and the generated custom-domain file.
 
-## Deployment Notes
+To inspect the exact generated files locally, build the site and serve `dist/`:
 
-For bakery deployment, push the shared site content to `boldloveBAKERY.com-production`.
+```sh
+python3 -m http.server 8000 --directory dist
+```
 
-For farm deployment, push the same shared site content to `boldloveFARM.com-production`, but do so in a way that preserves the farm repository's unique `CNAME` file.
+Then open `http://localhost:8000/`.
 
-If you are doing a manual cross-repo sync or force-push, verify the destination repository's `CNAME` before pushing.
+## Project structure
+
+- `src/pages/index.astro` — homepage content and structure
+- `src/layouts/BaseLayout.astro` — document shell and metadata
+- `src/components/SiteFooter.astro` — footer content
+- `src/styles/global.css` — visual design and responsive rules
+- `public/` — files copied unchanged into the generated site
+- `tests/site.test.js` — checks for the generated site
+- `.github/workflows/deploy.yml` — GitHub Pages build and deployment
+
+`dist/` is generated and is not committed.
+
+## GitHub Pages deployment
+
+The deployment workflow runs when `main` is pushed and can also be started manually from GitHub Actions. It installs from the lockfile, builds the Astro site, uploads `dist/`, and deploys that artifact to GitHub Pages.
+
+In each production repository, configure GitHub Pages to use **GitHub Actions** as its source. The workflow does not hard-code a domain; Astro copies that repository's `public/CNAME` into `dist/CNAME` during the build.
+
+## Preserve each repository's `CNAME`
+
+The two production repositories share site source but own different custom-domain files:
+
+- Bakery: `public/CNAME` must contain `boldlovebakery.com`
+- Farm: `public/CNAME` must contain the farm repository's own domain
+
+Treat `public/CNAME` as destination-owned when synchronizing source between repositories. Before applying shared changes to the farm repository, record its existing `public/CNAME`, exclude that file from the source sync, and confirm it is unchanged before committing or pushing. Apply the same rule in reverse for the bakery repository.
+
+Do not copy the bakery `public/CNAME` over the farm value, and do not force-push shared content without first verifying the destination file.
+
+After syncing either repository, run:
+
+```sh
+npm ci
+npm test
+```
+
+The custom-domain test confirms that the generated value exactly matches the `public/CNAME` belonging to the repository being built.
+
+## Production remotes
+
+- `boldloveBAKERY.com-production` → `https://github.com/boldlovebakery/boldlovebakery.com.git`
+- `boldloveFARM.com-production` → `https://github.com/boldlovebakery/boldlovefarm.com.git`

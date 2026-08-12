@@ -1,0 +1,54 @@
+---
+import SiteFooter from "../components/SiteFooter.astro";
+import BaseLayout from "../layouts/BaseLayout.astro";
+
+const shopUrl = "https://grownby.com/farms/bold-love-farm-bakery/shop";
+---
+
+<BaseLayout>
+  <main class="page">
+    <div class="layout">
+      <section class="panel hero" aria-labelledby="site-title">
+        <div class="hero-top">
+          <div class="hero-copy">
+            <p class="eyebrow">Fresh Local Food, Every Week</p>
+            <h1 id="site-title">Bold Love Farm &amp; Bakery</h1>
+            <p class="lede">
+              Seasonal produce, breads, pastries, and prepared foods grown and made with care, then
+              offered through our online store.
+            </p>
+            <div class="cta-row">
+              <a
+                class="primary-cta"
+                href={shopUrl}
+                target="_blank"
+                rel="noopener noreferrer">Shop The Online Store</a
+              >
+            </div>
+            <p class="support-copy">
+              Our produce is USDA-certified organic, grown close to home, and gets to you shortly
+              after it comes out of the ground. We bake and cook with the same care, so the food
+              reaches you fresh, local, and full of nutrition.
+            </p>
+          </div>
+          <div class="hero-brand">
+            <div class="logo-frame">
+              <img
+                class="logo-mark"
+                src="/bold-love-logo.png"
+                alt="Bold Love Farm and Bakery logo"
+                width="600"
+                height="600"
+              />
+            </div>
+            <p class="brand-note">
+              The weekly shop brings together what we grow, what we bake, what we cook, and what we
+              share from our local partners.
+            </p>
+          </div>
+        </div>
+        <SiteFooter />
+      </section>
+    </div>
+  </main>
+</BaseLayout>
