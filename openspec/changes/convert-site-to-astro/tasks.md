@@ -26,3 +26,9 @@
 - [x] 4.2 Add or update the GitHub Pages workflow so it builds the project and publishes `dist/` as the Pages artifact without hard-coding either custom domain.
 - [x] 4.3 Document the two-production-repository publishing process, including how shared content is synchronized while each destination's `public/CNAME` remains unchanged.
 - [x] 4.4 Review the final repository for stale root-static instructions or asset references and run the full documented verification workflow once more.
+
+## 5. Restore Popup Integration
+
+- [x] 5.1 Restore the existing Mailchimp connected-site loader in the Astro document layout without adding a local JavaScript dependency.
+- [x] 5.2 Update the generated-output checks and project documentation to preserve the popup integration.
+- [x] 5.3 Build the site, verify the configured Mailchimp endpoint serves JavaScript, and document the browser check for visitor-specific popup display rules.

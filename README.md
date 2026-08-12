@@ -2,7 +2,7 @@
 
 This repository is the canonical source for the shared website content used by `boldloveBAKERY.com` and `boldloveFARM.com`. The site is built with Astro and published as static files through GitHub Pages.
 
-The page itself uses Astro templates and CSS. It does not use a frontend framework or ship client-side JavaScript.
+The page itself uses Astro templates and CSS. It does not use a frontend framework. The only client-side JavaScript is Mailchimp's connected-site loader, which provides the existing signup popup.
 
 ## Requirements
 
@@ -39,7 +39,7 @@ Build the site and run the focused checks against the generated files:
 npm test
 ```
 
-The checks cover the homepage metadata and content, shop links, local assets, absence of client-side scripts, and the generated custom-domain file.
+The checks cover the homepage metadata and content, shop links, local assets, the Mailchimp popup loader, and the generated custom-domain file.
 
 To inspect the exact generated files locally, build the site and serve `dist/`:
 
@@ -48,6 +48,12 @@ python3 -m http.server 8000 --directory dist
 ```
 
 Then open `http://localhost:8000/`.
+
+### Check the Mailchimp popup
+
+For the most reliable popup check, open the deployed site in a private browser window and wait for the delay configured in Mailchimp. A private window avoids a previous dismissal suppressing the popup. Temporarily disable content-blocking extensions if the popup still does not appear.
+
+Mailchimp may apply connected-domain and audience rules that prevent the popup from appearing on `localhost`, even when the loader is working. The generated page must contain a script with `id="mcjs"`; `npm test` checks that the account-specific loader is present.
 
 ## Project structure
 

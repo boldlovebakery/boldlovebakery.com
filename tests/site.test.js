@@ -12,7 +12,15 @@ test("the generated homepage has the required document metadata", () => {
   assert.match(homepage, /<meta name="viewport" content="width=device-width, initial-scale=1">/);
   assert.match(homepage, /<title>Bold Love Farm &amp; Bakery<\/title>/);
   assert.equal((homepage.match(/<h1\b/g) || []).length, 1);
-  assert.doesNotMatch(homepage, /<script\b/i);
+});
+
+test("the generated homepage includes the existing Mailchimp popup loader", () => {
+  assert.equal((homepage.match(/<script\b/g) || []).length, 1);
+  assert.match(homepage, /<script id="mcjs">/);
+  assert.match(
+    homepage,
+    /https:\/\/chimpstatic\.com\/mcjs-connected\/js\/users\/c1e0805d9318df47dc11e74a1\/121b62670c533dbcbe2fbe33f\.js/,
+  );
 });
 
 test("the generated homepage preserves its critical content", () => {

@@ -1,6 +1,6 @@
 ## Context
 
-See `proposal.md` for motivation. The repository currently serves a single root `index.html` directly through GitHub Pages, with CSS embedded in that file and a small set of root-level assets. The same content is published to bakery and farm production repositories, but each destination must keep its own `CNAME`. The current experience is intentionally static and has no application backend.
+See `proposal.md` for motivation. The repository currently serves a single root `index.html` directly through GitHub Pages, with CSS embedded in that file and a small set of root-level assets. The same content is published to bakery and farm production repositories, but each destination must keep its own `CNAME`. The current experience is intentionally static and has no application backend. Its one required browser-side integration is Mailchimp's connected-site loader, which controls a remotely configured signup popup.
 
 The new `astro-static-site` specification requires the generated result to retain the current page, links, metadata, accessibility basics, and custom-domain behavior. The migration also needs a low-complexity workflow appropriate for a one-page site.
 
@@ -13,10 +13,11 @@ The new `astro-static-site` specification requires the generated result to retai
 - Copy public brand assets and the active repository `CNAME` into every production build without transforming their contents.
 - Make build output and high-value homepage invariants reproducibly verifiable.
 - Provide a deployment path that works in each production repository without hard-coding the bakery domain into shared automation.
+- Preserve the existing Mailchimp popup through its small account-specific loader without adding locally maintained popup behavior.
 
 **Non-Goals:**
 
-- Redesigning the homepage, rewriting approved marketing copy, or adding routes, content collections, a CMS, forms, analytics, or client-side interactivity.
+- Redesigning the homepage, rewriting approved marketing copy, or adding routes, content collections, a CMS, locally implemented forms, analytics, or client-side interactivity beyond the existing Mailchimp popup.
 - Downloading or replacing the externally hosted USDA Organic seal as part of this migration.
 - Combining the two production repositories or automating cross-repository synchronization.
 - Introducing a general component library or design system for a single-page site.
@@ -28,6 +29,12 @@ The new `astro-static-site` specification requires the generated result to retai
 The project will use Astro's default static generation and emit `dist/`. GitHub Pages only needs the resulting files, so an adapter or server runtime would add operational complexity without improving the current site.
 
 Alternative considered: keep the root HTML file and use Astro only as a pass-through build tool. That would technically add a build but retain the monolithic authoring problem and provide little value.
+
+### Preserve the Mailchimp connected-site loader in the base layout
+
+Keep the existing inline bootstrap snippet, including its account-specific `chimpstatic.com` URL, in the document head. Astro emits it unchanged, and the remotely loaded Mailchimp script continues to own popup timing, targeting, dismissal, and display. No local popup component or additional package is introduced.
+
+Alternative considered: omit the loader because the visible page itself is static. That breaks an existing visitor interaction. Reimplementing the popup locally was also rejected because it would duplicate remotely configured Mailchimp behavior and require more JavaScript maintenance.
 
 ### Keep a small, explicit source structure
 
@@ -68,6 +75,7 @@ Alternative considered: leave dependency versions unlocked. That makes a clean c
 - [The Astro rewrite introduces subtle visual drift] → Port markup and CSS with minimal intentional changes, then compare desktop and mobile renders against the existing page.
 - [A URL-safe asset rename leaves stale references] → Verify every generated local asset reference resolves within `dist/`.
 - [The external USDA seal is unavailable] → Retain meaningful certification text so the information remains present; vendoring the seal can be evaluated separately if reliability becomes a requirement.
+- [Mailchimp is blocked, unavailable, or suppresses the popup for a returning visitor] → Keep the integration isolated to its original loader, verify that the configured script is requested, and use Mailchimp's audience/display settings when diagnosing visitor-specific display behavior.
 - [A build step increases maintenance overhead] → Keep dependencies and scripts minimal, commit the lockfile, and document the four core commands.
 
 ## Migration Plan

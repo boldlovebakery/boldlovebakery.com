@@ -5,12 +5,24 @@ Define the observable homepage experience and deployable static output that must
 ## ADDED Requirements
 
 ### Requirement: Static root homepage
-The system SHALL generate a complete homepage at `/` that can be served from static hosting without an application server or browser-side JavaScript.
+The system SHALL generate a complete homepage at `/` that can be served from static hosting without an application server or application-owned browser-side JavaScript.
 
 #### Scenario: Generate the production homepage
 - **WHEN** the production site build completes successfully
 - **THEN** the output contains an `index.html` document for the root URL
-- **AND** the document does not require a server runtime or client-side JavaScript to render its current content
+- **AND** the document does not require a server runtime or client-side JavaScript to render its static content
+
+### Requirement: Preserve the mailing-list popup integration
+The generated homepage SHALL include the existing Mailchimp connected-site loader so Mailchimp can initialize the configured signup popup without locally maintained popup JavaScript.
+
+#### Scenario: Build the popup-enabled homepage
+- **WHEN** the production site build completes successfully
+- **THEN** the generated root document contains the `mcjs` loader
+- **AND** the loader requests the configured Bold Love Mailchimp connected-site script from `chimpstatic.com`
+
+#### Scenario: Initialize the configured popup
+- **WHEN** a visitor loads the homepage and Mailchimp's display rules allow the signup popup for that visitor
+- **THEN** the connected-site script can initialize and display the configured popup
 
 ### Requirement: Preserve the branded visitor experience
 The generated homepage SHALL preserve the Bold Love Farm & Bakery page title, introductory farm-and-bakery content, black-and-gold visual identity, responsive layout, logo, local community statement, and USDA Organic certification information.
@@ -70,4 +82,3 @@ The repository SHALL provide documented commands that install locked dependencie
 #### Scenario: Verify critical generated behavior
 - **WHEN** a maintainer runs the documented verification command
 - **THEN** it checks the generated homepage, critical metadata and content, shopping destination, required local assets, and `CNAME` output
-
