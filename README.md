@@ -85,6 +85,7 @@ After deploying, visit each production domain and confirm the visit appears in P
 - `src/components/SiteFooter.astro` — footer content
 - `src/styles/global.css` — visual design and responsive rules
 - `public/` — files copied unchanged into the generated site
+- `public/downloads/` — downloadable files served at `/downloads/<filename>`
 - `tests/site.test.js` — checks for the generated site
 - `tests/blog.test.js` — blog output and isolated publishing/validation checks
 - `openspec/specs/` — current behavioral specifications
