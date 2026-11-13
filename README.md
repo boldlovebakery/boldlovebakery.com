@@ -4,7 +4,7 @@ This repository is the canonical source for the website published at both [boldl
 
 The site is built with Astro and published as static files through GitHub Pages.
 
-The site itself uses Astro templates and CSS. It does not use a frontend framework. Its only client-side JavaScript is Plausible's privacy-friendly analytics loader and Mailchimp's connected-site loader, which provides the existing signup popup.
+The site itself uses Astro templates and CSS. It does not use a frontend framework. Its only client-side JavaScript is Mailchimp's connected-site loader, which provides the existing signup popup.
 
 ## Requirements
 
@@ -41,7 +41,7 @@ Build the site and run the focused checks against the generated files:
 npm test
 ```
 
-The checks cover metadata and content across all five main pages, internal navigation, shop-link behavior, the Contact FAQ, the Products ordering guide, local assets, and the Plausible and Mailchimp loaders. Isolated blog fixture builds also check published articles, optimized images, RSS ordering, draft exclusion, and invalid frontmatter errors.
+The checks cover metadata and content across all five main pages, internal navigation, shop-link behavior, the Contact FAQ, the Products ordering guide, local assets, and the Mailchimp loader. Isolated blog fixture builds also check published articles, optimized images, RSS ordering, draft exclusion, and invalid frontmatter errors.
 
 To inspect the production build locally:
 
@@ -57,16 +57,6 @@ Astro prints the preview address to open in a browser.
 For the most reliable popup check, open the deployed site in a private browser window and wait for the delay configured in Mailchimp. A private window avoids a previous dismissal suppressing the popup. Temporarily disable content-blocking extensions if the popup still does not appear.
 
 Mailchimp may apply connected-domain and audience rules that prevent the popup from appearing on `localhost`, even when the loader is working. The generated page must contain a script with `id="mcjs"`; `npm test` checks that the account-specific loader is present.
-
-## Plausible analytics
-
-The account-generated Plausible script is installed once in `src/layouts/BaseLayout.astro`, so every page includes it. Its Plausible site identifier is `boldlovefarm.com`. The script is configured through Plausible for automatic pageviews, outbound-link clicks, file downloads, and form submissions.
-
-The production build is served from both `boldlovefarm.com` and `boldlovebakery.com`. Configure `boldlovebakery.com` as an allowed hostname for the same site in Plausible so both domains report to one dashboard and can be separated with Plausible's hostname filter.
-
-Plausible ignores `localhost` by default. Leave that behavior enabled so local development and automated checks do not affect production traffic figures.
-
-After deploying, visit each production domain and confirm the visit appears in Plausible's real-time dashboard. Click a **Shop Bold Love Online** button and confirm that GrownBy appears under outbound-link clicks. Content-blocking browser extensions may prevent analytics from loading, so use a private window without extensions when diagnosing the integration.
 
 ## Project structure
 
@@ -229,7 +219,7 @@ git push both-production main
 
 That single command triggers the same Pages workflow in both repositories. Check the Actions tab in each repository and confirm both **Deploy to GitHub Pages** runs succeed.
 
-After both workflows finish, open each production domain and check the homepage, primary navigation, store link, and any pages changed by the release. Confirm that canonical URLs still use `https://boldlovefarm.com`; then check Plausible's real-time dashboard and outbound-link activity.
+After both workflows finish, open each production domain and check the homepage, primary navigation, store link, and any pages changed by the release. Confirm that canonical URLs still use `https://boldlovefarm.com`.
 
 If one push fails, fetch both repositories again and inspect the commits present on only one side. For example:
 

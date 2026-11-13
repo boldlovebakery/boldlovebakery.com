@@ -43,17 +43,6 @@ test("the generated homepage includes the existing Mailchimp popup loader", () =
   );
 });
 
-test("every generated page includes the Plausible analytics loader", () => {
-  for (const page of [homepage, aboutPage, contactPage, productsPage, blogPage]) {
-    assert.equal(
-      (page.match(/https:\/\/plausible\.io\/js\/pa-Wpa3aD0Sz7bNtD4RME7fK\.js/g) || []).length,
-      1,
-    );
-    assert.match(page, /<script async src="https:\/\/plausible\.io\/js\/pa-Wpa3aD0Sz7bNtD4RME7fK\.js"><\/script>/);
-    assert.match(page, /plausible\.init\(\)/);
-  }
-});
-
 test("the generated homepage presents the refreshed critical content", () => {
   const requiredContent = [
     "Organic fruits and vegetables, prepared foods, sourdough breads, baked goods, and many other products from our local partners",
