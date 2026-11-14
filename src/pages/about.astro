@@ -2,8 +2,11 @@
 import SiteFooter from "../components/SiteFooter.astro";
 import SiteHeader from "../components/SiteHeader.astro";
 import BaseLayout from "../layouts/BaseLayout.astro";
+import { getBlogPosts } from "../lib/blog.js";
 
 const shopUrl = "https://grownby.com/farms/bold-love-farm-bakery/shop";
+// Drafts are available locally; production links only to published posts.
+const showOriginStoryLink = (await getBlogPosts()).some((post) => post.id === "whats-in-a-name");
 ---
 
 <BaseLayout
@@ -28,6 +31,23 @@ const shopUrl = "https://grownby.com/farms/bold-love-farm-bakery/shop";
         </header>
 
         <div class="about-sections" aria-label="About Bold Love stories">
+          <section class="about-section about-section--featured" aria-labelledby="why-bold-love">
+            <div class="about-story">
+              <h2 id="why-bold-love">Why Bold Love?</h2>
+              <p>
+                The name Bold Love has a story behind it. Our daughter Olivia was born with a rare,
+                progressively debilitating disease and passed away just a few days before her 16th
+                birthday in 2018. Despite all she endured, she never lost her spark or her ability to
+                bring out compassion, generosity, and love in the people around her.
+              </p>
+              <p>We wanted to find a way to carry that spirit forward. Leaving our careers, buying a farm, and
+                starting a bakery in a town where we knew no one was certainly Bold! But nurturing the Earth, nourishing people with wholesome food, and building community are the
+                simple acts of Love that honor Olivia and the gift her life was to us.
+                {showOriginStoryLink && <>{" "}<a class="text-link" href="/blog/whats-in-a-name/">Read the full story</a>.</>}
+              </p>
+            </div>
+          </section>
+
           <section class="about-section about-section--featured" aria-labelledby="about-farm">
             <div class="about-story">
               <h2 id="about-farm">About the Farm</h2>

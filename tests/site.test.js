@@ -156,11 +156,13 @@ test("all information pages have metadata, landmarks, and shared navigation", ()
 test("the About page presents the planned story sections in order", () => {
   assert.ok(aboutText.includes("About Bold Love"));
 
+  const namePosition = aboutText.indexOf("Why Bold Love?");
   const farmPosition = aboutText.indexOf("About the Farm");
   const bakeryPosition = aboutText.indexOf("About the Bakery");
   const partnersPosition = aboutText.indexOf("About Our Partners");
 
-  assert.ok(farmPosition >= 0);
+  assert.ok(namePosition >= 0);
+  assert.ok(farmPosition > namePosition);
   assert.ok(bakeryPosition > farmPosition);
   assert.ok(partnersPosition > bakeryPosition);
   assert.ok(
@@ -181,7 +183,7 @@ test("the About page presents the planned story sections in order", () => {
   );
   assert.ok(
     aboutText.includes(
-      "People often tell us they're the best cookies they've ever had. Delighting you is what the bakery's all about!",
+      "people often tell us it's the best cookie they've ever had. Delighting you is what the bakery's all about!",
     ),
   );
   assert.ok(!aboutText.includes("Our bakery story is coming soon."));

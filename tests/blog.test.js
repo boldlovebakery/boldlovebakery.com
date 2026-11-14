@@ -47,8 +47,15 @@ test("published articles, images, ordering, and invalid metadata survive real bu
       assert.match(navigation, /href="\/blog\/"/);
       if (route.startsWith("blog/")) assert.match(navigation, /href="\/blog\/" aria-current="page"/);
     }
+    const aboutWithDraftStory = await readFile(path.join(directory, "dist/about/index.html"), "utf8");
+    assert.match(aboutWithDraftStory, /Why Bold Love\?/);
+    assert.doesNotMatch(aboutWithDraftStory, /href="\/blog\/whats-in-a-name\//);
     await writeFile(path.join(posts, "test-old.md"), frontmatter("Older story", "2026-09-17") + "showShopLink: false\n---\n\nEarlier article.\n");
+    await writeFile(path.join(posts, "whats-in-a-name.md"), frontmatter("Origin story", "2026-09-16") + "---\n\nThe origin of Bold Love.\n");
     build();
+    const aboutWithPublishedStory = await readFile(path.join(directory, "dist/about/index.html"), "utf8");
+    assert.match(aboutWithPublishedStory, /<a class="text-link" href="\/blog\/whats-in-a-name\/">Read the full story<\/a>/);
+    await readFile(path.join(directory, "dist/blog/whats-in-a-name/index.html"), "utf8");
     const html = await readFile(path.join(directory, "dist/blog/test-new/index.html"), "utf8");
     assert.match(html, /A complete article body/);
     assert.match(html, /September 18, 2026/);
@@ -57,10 +64,10 @@ test("published articles, images, ordering, and invalid metadata survive real bu
     assert.match(html, /property="og:image" content="https:\/\/boldlovefarm.com\/_astro\//);
     assert.match(html, /alt="Bold Love logo"/);
     assert.match(html, /href="https:\/\/grownby.com\/farms\/bold-love-farm-bakery\/shop" target="_blank" rel="noopener noreferrer"/);
-    assert.equal((html.match(/Shop Bold Love Online/g) || []).length, 2);
+    assert.equal((html.match(/Shop Bold Love Online/g) || []).length, 1);
     const withoutShop = await readFile(path.join(directory, "dist/blog/test-old/index.html"), "utf8");
     assert.doesNotMatch(withoutShop, /Shop Bold Love Online|https:\/\/grownby.com\/farms\/bold-love-farm-bakery\/shop/);
-    assert.match(withoutShop, /More from the blog/);
+    assert.match(withoutShop, /Back to the blog/);
     assert.match(withoutShop, /aria-label="Site footer"/);
     assert.equal((html.match(/<h1\b/g) || []).length, 1);
     for (const file of ["blog/index.html", "rss.xml"]) {
