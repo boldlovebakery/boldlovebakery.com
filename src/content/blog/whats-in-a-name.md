@@ -2,7 +2,7 @@
 title: "What's in a Name?"
 description: "The origin story of Bold Love."
 publishDate: 2026-11-13
-draft: true
+draft: false
 showShopLink: true
 # updatedDate: 2026-09-19
 # featureImage: ../../assets/images/family.png
