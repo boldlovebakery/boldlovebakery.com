@@ -12,7 +12,7 @@ showShopLink: true
 Many people ask us where we got the name Bold Love. There’s a story behind it. It’s not an easy one to tell, but it’s definitely worth sharing. So, friend, pull up a chair and let’s talk.
 <div style="max-width: 320px; margin: 1.5rem auto;">
 
-  ![Kim, George, Clay, and Olivia together.](../../assets/images/family.png)
+  ![Kim, George, Clay, and Olivia together.](../../assets/images/2005-card.png)
 
 </div>
 
@@ -28,7 +28,7 @@ The pain and grief could have overwhelmed us. And sometimes it did. And sometime
 
 Physically, she could do very little, but wherever she went she touched people. She brought out their natural compassion, generosity, and love.
 
-One time, we were flying to Utah for a family vacation. The flight attendant took amazing care of us and helped everything go smoothly.  As we were departing, he asked about our return flight and said he would try to rearrange his schedule to be on it. When we boarded the flight to go home, there he was!
+One time, we were flying to Utah for a family vacation. The flight attendant took amazing care of us and helped everything go smoothly.  As we departed he asked about our return flight. He said he would try to rearrange his schedule to be on it. When we later boarded the flight to go home, there he was!
 
 Those are the kinds of acts of Bold Love Olivia inspired.
 
@@ -46,7 +46,7 @@ But, caring for the Earth in the way we grow food, nourishing soil, plants, and 
 
 The amazing thing is that her gift continues to give! We had no idea the community that would form around us when we started this venture. An amazing group of committed and caring people have supported us from the very beginning and it just keeps growing!
 
-Friend, I know you have suffered too. Every life has its share. Perhaps that’s a small part of why you are here now—to be part of a community that cares for each other despite all the hurt. To us, that is one of the most healing and uplifting acts of Bold Love there is!
+Friend, I know you have suffered too. Every life has its share. Perhaps that’s a small part of why you are here now—to be part of a community that cares for each other despite all the hurt. That is one of the most healing and uplifting acts of Bold Love there is!
 
 <div style="max-width: 520px; margin: 1.5rem auto;">
 
