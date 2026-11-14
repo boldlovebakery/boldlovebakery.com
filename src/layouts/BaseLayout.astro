@@ -47,5 +47,28 @@ const canonical = new URL(pathname, Astro.site);
   </head>
   <body>
     <slot />
+    {import.meta.env.PROD && !draft && (
+      <script is:inline id="cloudflare-analytics">
+        // Public site tokens from Cloudflare Web Analytics, not API keys.
+        // Leave a token empty to disable analytics for that domain.
+        const analyticsTokens = {
+          "boldlovefarm.com": "8eadbc0fb63d4df58530c7cfda70ca97",
+          "boldlovebakery.com": "d0bae0ac1c5d48799cdb3d8ea07accd0",
+        };
+
+        // Both domains share this build. Select by the visitor's actual hostname,
+        // so local previews and other hosts never send analytics.
+        const hostname = window.location.hostname.replace(/^www\./, "");
+        const token = Object.hasOwn(analyticsTokens, hostname) ? analyticsTokens[hostname] : "";
+
+        if (token) {
+          const beacon = document.createElement("script");
+          beacon.type = "module";
+          beacon.src = "https://static.cloudflareinsights.com/beacon.min.js";
+          beacon.dataset.cfBeacon = JSON.stringify({ token });
+          document.body.appendChild(beacon);
+        }
+      </script>
+    )}
   </body>
 </html>

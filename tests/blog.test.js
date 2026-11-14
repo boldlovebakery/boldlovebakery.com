@@ -12,7 +12,6 @@ test("all public pages advertise canonical farm URLs and RSS", async () => {
     const html = await readFile(path.join(root, "dist", route, "index.html"), "utf8");
     assert.ok(html.includes(`rel="canonical" href="https://boldlovefarm.com/${route}"`));
     assert.match(html, /type="application\/rss\+xml"[^>]+href="https:\/\/boldlovefarm.com\/rss.xml"/);
-    assert.doesNotMatch(html.match(/<nav\b[\s\S]*?<\/nav>/)?.[0] || "", /href="\/blog\/"/);
   }
   const blog = await readFile(path.join(root, "dist/blog/index.html"), "utf8");
   assert.ok(!blog.includes("Your next story"));
@@ -36,8 +35,26 @@ test("published articles, images, ordering, and invalid metadata survive real bu
     await mkdir(path.join(directory, "src/assets/blog"), { recursive: true });
     await cp(path.join(root, "public/bold-love-logo.png"), path.join(directory, "src/assets/blog/test.png"));
     const posts = path.join(directory, "src/content/blog");
-    const frontmatter = (title, date) => `---\ntitle: "${title}"\ndescription: "A test story & details"\npublishDate: ${date}\ndraft: false\n`;
+    // Use only fixture posts so publishing real articles cannot change these scenarios.
+    await rm(posts, { recursive: true, force: true });
+    await mkdir(posts, { recursive: true });
+    const frontmatter = (title, date, draft = false) => `---\ntitle: "${title}"\ndescription: "A test story & details"\npublishDate: ${date}\ndraft: ${draft}\n`;
     const imageFields = "featureImage: ../../assets/blog/test.png\nfeatureImageAlt: Bold Love logo\n";
+    await writeFile(path.join(posts, "draft-template.md"), frontmatter("Draft template", "2026-09-18", true) + "---\n\nAn unpublished draft.\n");
+    await writeFile(path.join(posts, "whats-in-a-name.md"), frontmatter("Origin story", "2026-09-16", true) + "---\n\nAn unpublished origin story.\n");
+    build();
+    // Drafts alone must leave Blog hidden and stay out of production routes and RSS.
+    for (const route of ["", "about/", "contact/", "products/", "blog/"]) {
+      const page = await readFile(path.join(directory, "dist", route, "index.html"), "utf8");
+      assert.doesNotMatch(page.match(/<nav\b[\s\S]*?<\/nav>/)?.[0] || "", /href="\/blog\/"/);
+    }
+    const draftRoutes = await readdir(path.join(directory, "dist/blog"));
+    assert.ok(!draftRoutes.includes("draft-template"));
+    assert.ok(!draftRoutes.includes("whats-in-a-name"));
+    for (const file of ["blog/index.html", "rss.xml"]) {
+      const output = await readFile(path.join(directory, "dist", file), "utf8");
+      assert.doesNotMatch(output, /Draft template|Origin story/);
+    }
     await writeFile(path.join(posts, "test-new.md"), frontmatter("New story", "2026-09-18") + imageFields + "updatedDate: 2026-09-19\n---\n\n## Test heading\n\nA complete article body.\n");
     build();
     // The first published post enables Blog everywhere; drafts alone do not.

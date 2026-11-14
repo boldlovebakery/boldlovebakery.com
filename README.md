@@ -4,7 +4,7 @@ This repository is the canonical source for the website published at both [boldl
 
 The site is built with Astro and published as static files through GitHub Pages.
 
-The site itself uses Astro templates and CSS. It does not use a frontend framework. Its only client-side JavaScript is Mailchimp's connected-site loader, which provides the existing signup popup.
+The site itself uses Astro templates and CSS. It does not use a frontend framework. Its client-side JavaScript provides Mailchimp's existing signup popup and Cloudflare Web Analytics on production domains.
 
 ## Requirements
 
@@ -41,7 +41,7 @@ Build the site and run the focused checks against the generated files:
 npm test
 ```
 
-The checks cover metadata and content across all five main pages, internal navigation, shop-link behavior, the Contact FAQ, the Products ordering guide, local assets, and the Mailchimp loader. Isolated blog fixture builds also check published articles, optimized images, RSS ordering, draft exclusion, and invalid frontmatter errors.
+The checks cover metadata and content across all five main pages, internal navigation, shop-link behavior, the Contact FAQ, the Products ordering guide, local assets, and the Mailchimp loader. Isolated blog builds use their own fixture posts, independent of published site content, to check draft-only navigation, the first published post, the About story link, optimized images, RSS ordering, draft exclusion, and invalid frontmatter errors.
 
 To inspect the production build locally:
 
@@ -57,6 +57,28 @@ Astro prints the preview address to open in a browser.
 For the most reliable popup check, open the deployed site in a private browser window and wait for the delay configured in Mailchimp. A private window avoids a previous dismissal suppressing the popup. Temporarily disable content-blocking extensions if the popup still does not appear.
 
 Mailchimp may apply connected-domain and audience rules that prevent the popup from appearing on `localhost`, even when the loader is working. The generated page must contain a script with `id="mcjs"`; `npm test` checks that the account-specific loader is present.
+
+## Cloudflare Web Analytics
+
+Cloudflare Web Analytics is configured for both production domains, each with its own public token and dashboard. Collection begins when this code is deployed to both GitHub Pages repositories. The tokens are stored in the shared source; deployment needs no additional environment variables or secrets.
+
+To set up or replace the public site tokens:
+
+1. Sign in at [Cloudflare](https://dash.cloudflare.com/) and open **Web Analytics**.
+2. Add `boldlovefarm.com` and `boldlovebakery.com` as separate sites. Use manual JavaScript snippet installation if offered. This does not require changing DNS or moving the site from GitHub Pages.
+3. For each site, open **Manage site** and copy the token from the supplied snippet's `data-cf-beacon` value, such as `{"token": "your-public-site-token"}`.
+4. In `src/layouts/BaseLayout.astro`, update that domain's value in `analyticsTokens`. These tokens are public identifiers intended to appear in page source; never put a Cloudflare API key here.
+5. Run `npm test`, then deploy the shared source to both production repositories using the normal deployment process below.
+
+The shared layout covers every page and published blog post. The loader selects a token using the browser's actual hostname, including the `www` version of either production domain, and loads Cloudflare's `beacon.min.js` with `type="module"`, matching the supplied snippets. The canonical URL setting does not select the token: a visitor on `boldlovebakery.com` is counted in that domain's dashboard even though canonical URLs use `boldlovefarm.com`.
+
+Development pages, drafts, localhost previews (including `npm run preview`), and other hostnames do not load the Cloudflare beacon. An empty token keeps its domain disabled. If automatic injection is already enabled in Cloudflare, select manual installation so each page loads the beacon only once.
+
+After deployment, visit a few pages on each domain with content blockers temporarily disabled, then navigate away or close the tab so Cloudflare can finish collecting the visit. Check each site's dashboard after a few minutes. In browser developer tools, confirm that `beacon.min.js` loads and a beacon request succeeds. A successful local build does not verify that Cloudflare is receiving production visits.
+
+Use the dashboard's page/path breakdown and a consistent date range to compare pages and posts. Each domain has its own dashboard; compare or combine both domains when assessing total traffic. Collection starts after activation and does not reconstruct earlier visits. Browser blocking can prevent some visits from being counted.
+
+See [Cloudflare's setup guide](https://developers.cloudflare.com/web-analytics/get-started/) for account-side instructions.
 
 ## Project structure
 
@@ -88,7 +110,7 @@ Mailchimp may apply connected-domain and audience rules that prevent the popup f
 
 The About page includes the current farm, bakery, and partner stories, with each section linking visitors to the online store.
 
-The blog has a local draft template, not a published article. Production shows an intentional empty state at `/blog/`, but the shared navigation hides the Blog link while there are no published posts. Publishing the first post makes the link appear automatically; drafts do not count.
+The blog includes the published `whats-in-a-name` article and a local draft template. The published article appears at `/blog/whats-in-a-name/`, in the blog listing, and in RSS; the About page links to it with “Read the full story.” The shared navigation shows Blog while at least one post is published; drafts do not count.
 
 ## Writing and publishing blog posts
 
@@ -222,7 +244,7 @@ git push both-production main
 
 That single command triggers the same Pages workflow in both repositories. Check the Actions tab in each repository and confirm both **Deploy to GitHub Pages** runs succeed.
 
-After both workflows finish, open each production domain and check the homepage, primary navigation, store link, and any pages changed by the release. Confirm that canonical URLs still use `https://boldlovefarm.com`.
+After both workflows finish, open each production domain and check the homepage, primary navigation, store link, and any pages changed by the release. Confirm that canonical URLs still use `https://boldlovefarm.com`. Verify analytics on both domains using the Cloudflare checks above; each visit should appear in its domain's dashboard.
 
 If one push fails, fetch both repositories again and inspect the commits present on only one side. For example:
 
