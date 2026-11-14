@@ -47,7 +47,7 @@ test("published articles, images, ordering, and invalid metadata survive real bu
       assert.match(navigation, /href="\/blog\/"/);
       if (route.startsWith("blog/")) assert.match(navigation, /href="\/blog\/" aria-current="page"/);
     }
-    await writeFile(path.join(posts, "test-old.md"), frontmatter("Older story", "2026-09-17") + "---\n\nEarlier article.\n");
+    await writeFile(path.join(posts, "test-old.md"), frontmatter("Older story", "2026-09-17") + "showShopLink: false\n---\n\nEarlier article.\n");
     build();
     const html = await readFile(path.join(directory, "dist/blog/test-new/index.html"), "utf8");
     assert.match(html, /A complete article body/);
@@ -57,6 +57,11 @@ test("published articles, images, ordering, and invalid metadata survive real bu
     assert.match(html, /property="og:image" content="https:\/\/boldlovefarm.com\/_astro\//);
     assert.match(html, /alt="Bold Love logo"/);
     assert.match(html, /href="https:\/\/grownby.com\/farms\/bold-love-farm-bakery\/shop" target="_blank" rel="noopener noreferrer"/);
+    assert.equal((html.match(/Shop Bold Love Online/g) || []).length, 2);
+    const withoutShop = await readFile(path.join(directory, "dist/blog/test-old/index.html"), "utf8");
+    assert.doesNotMatch(withoutShop, /Shop Bold Love Online|https:\/\/grownby.com\/farms\/bold-love-farm-bakery\/shop/);
+    assert.match(withoutShop, /More from the blog/);
+    assert.match(withoutShop, /aria-label="Site footer"/);
     assert.equal((html.match(/<h1\b/g) || []).length, 1);
     for (const file of ["blog/index.html", "rss.xml"]) {
       const result = await readFile(path.join(directory, "dist", file), "utf8");

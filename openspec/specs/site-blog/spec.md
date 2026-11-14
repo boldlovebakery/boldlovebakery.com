@@ -51,7 +51,7 @@ Posts marked as drafts MUST be excluded from production-facing discovery and pub
 - **AND** its draft state is clearly visible in the local presentation
 
 ### Requirement: Present the blog index and articles
-The blog index SHALL order published posts from newest to oldest and present each post's title, description, publication date, and optional feature image as a link to the article. Each article SHALL present one primary heading, its publication date, an updated date when supplied, the complete post body, a way back to the blog index, a prominent online-store action, and the shared site header and footer. When there are no published posts, the index SHALL present an intentional empty state instead of a blank or broken listing.
+The blog index SHALL order published posts from newest to oldest and present each post's title, description, publication date, and optional feature image as a link to the article. Each article SHALL present one primary heading, its publication date, an updated date when supplied, the complete post body, a way back to the blog index, and the shared site header and footer. Articles SHALL show a prominent online-store action and the footer shop link by default, but a post MAY set `showShopLink: false` in its frontmatter to omit both links on that article. When there are no published posts, the index SHALL present an intentional empty state instead of a blank or broken listing.
 
 #### Scenario: Browse published posts
 - **WHEN** a visitor opens `/blog/` with multiple published posts available
@@ -59,8 +59,14 @@ The blog index SHALL order published posts from newest to oldest and present eac
 - **AND** every summary links to its corresponding article
 
 #### Scenario: Read an article
-- **WHEN** a visitor opens a generated blog article
+- **WHEN** a visitor opens a generated blog article without `showShopLink: false`
 - **THEN** the article title, date, body, shared navigation, footer, blog-index link, and online-store action are visible and usable
+
+#### Scenario: Omit shop links from an individual article
+- **WHEN** a visitor opens a generated blog article whose frontmatter sets `showShopLink: false`
+- **THEN** the article's online-store action and footer shop link are omitted
+- **AND** the article body, shared navigation, footer, and blog-index links remain available
+- **AND** shop links on other pages are unaffected
 
 #### Scenario: View the empty blog
 - **WHEN** a visitor opens `/blog/` before any posts are published

@@ -102,6 +102,7 @@ title: "Summer at the farm"
 description: "A short introduction for the blog listing, search results, and RSS."
 publishDate: 2026-09-18
 draft: true
+# showShopLink: false
 # updatedDate: 2026-09-19
 # featureImage: ../../assets/blog/summer-at-the-farm.jpg
 # featureImageAlt: Describe the photograph for someone who cannot see it.
@@ -111,6 +112,8 @@ draft: true
 `title`, `description`, `publishDate`, and `draft` are required. Dates use `YYYY-MM-DD`. `updatedDate` is optional. A `featureImage` is optional, but requires meaningful `featureImageAlt` text. Create `src/assets/blog/` when adding your first photograph, and use a relative path from the Markdown file. Astro optimizes these local feature images. As a practical starting point, resize photographs to roughly 1600–2000 pixels wide and compress them before adding them to Git; avoid committing camera originals.
 
 Write ordinary Markdown below the frontmatter. The layout supplies the title as the only first-level heading, so start body headings with `##`. Use short paragraphs, lists, descriptive links, and `![meaningful alternative text](path-to-image)` for body images.
+
+To hide the “Shop Bold Love Online” button and footer link on an individual post, add `showShopLink: false` to its frontmatter. Omitting this setting (or setting it to `true`) keeps both links visible. Other pages are unaffected.
 
 Run `npm run dev` and visit `/blog/` or `/blog/draft-template/` to preview drafts. Drafts have a visible label and a `noindex` directive. They are completely excluded from production article routes, listings, and RSS; the feed excludes drafts even during development. A local preview is not an access-controlled publishing system, so do not put confidential material in the repository.
 

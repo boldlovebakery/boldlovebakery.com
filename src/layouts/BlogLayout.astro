@@ -5,7 +5,7 @@ import SiteHeader from "../components/SiteHeader.astro";
 import SiteFooter from "../components/SiteFooter.astro";
 import { formatPostDate } from "../lib/blog.js";
 const { post } = Astro.props;
-const { title, description, publishDate, updatedDate, draft, featureImage, featureImageAlt } = post.data;
+const { title, description, publishDate, updatedDate, draft, featureImage, featureImageAlt, showShopLink } = post.data;
 ---
 <BaseLayout title={`${title} | Bold Love Farm & Bakery`} description={description} article socialImage={featureImage?.src} socialImageAlt={featureImageAlt} draft={draft}>
   <main class="page content-page">
@@ -23,11 +23,7 @@ const { title, description, publishDate, updatedDate, draft, featureImage, featu
           {featureImage && <Image src={featureImage} alt={featureImageAlt} width={1200} class="blog-feature" loading="eager" />}
         </header>
         <div class="blog-prose"><slot /></div>
-        <div class="blog-actions">
-          <a class="primary-cta" href="https://grownby.com/farms/bold-love-farm-bakery/shop" target="_blank" rel="noopener noreferrer">Shop Bold Love Online</a>
-          <a class="text-link" href="/blog/">More from the blog</a>
-        </div>
-        <SiteFooter />
+        <SiteFooter showShopLink={showShopLink} />
       </article>
     </div>
   </main>

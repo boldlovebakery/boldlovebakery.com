@@ -9,6 +9,7 @@ const blog = defineCollection({
     publishDate: z.coerce.date(),
     updatedDate: z.coerce.date().optional(),
     draft: z.boolean(),
+    showShopLink: z.boolean().default(true),
     featureImage: image().optional(),
     featureImageAlt: z.string().trim().min(1).optional(),
   }).refine((post) => !post.featureImage || Boolean(post.featureImageAlt), {

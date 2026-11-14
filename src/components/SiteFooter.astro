@@ -1,19 +1,24 @@
 ---
+interface Props {
+  showShopLink?: boolean;
+}
+
+const { showShopLink = true } = Astro.props;
 const shopUrl = "https://grownby.com/farms/bold-love-farm-bakery/shop";
 ---
 
 <footer class="site-footer" aria-label="Site footer">
-  <div class="footer-grid">
+  <div class:list={["footer-grid", { "footer-grid--without-shop": !showShopLink }]}>
     <div class="footer-brand">
       <div class="footer-title">Bold Love Farm &amp; Bakery</div>
       <p class="footer-copy">Local food grown, baked, and prepared with care.</p>
     </div>
-    <a
+    {showShopLink && <a
       class="footer-link"
       href={shopUrl}
       target="_blank"
       rel="noopener noreferrer">Shop Bold Love Online</a
-    >
+    >}
     <div class="footer-cert">
       <span class="organic-badge">
         <img

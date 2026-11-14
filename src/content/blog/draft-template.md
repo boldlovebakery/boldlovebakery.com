@@ -3,6 +3,7 @@ title: "Your next story"
 description: "A draft template for a story from the farm, bakery, or our local partners."
 publishDate: 2026-09-18
 draft: true
+# showShopLink: false
 # updatedDate: 2026-09-19
 # featureImage: ../../assets/blog/your-photo.jpg
 # featureImageAlt: Describe what readers can see in your photograph.
